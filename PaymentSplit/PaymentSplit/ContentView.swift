@@ -13,16 +13,20 @@ struct ContentView: View {
     @State private var tipPercentage = 20
     
     var body: some View {
-        Form{
-            Section {
-                TextField("Check Amount:", value: $checkAmount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
-                    .keyboardType(.decimalPad)
-                //TextField gosta de text, mas usamos value no lugar de text pois text aceita string e value valor numerico. E quero usar o var cjeckAmount que é um Double
-                //Passamos o format como currecy para que o valor seja tratado como dinheiro
-                //Passamos Locale.current que contem pega as configurações da região do usuário, ele pega os dados do sistemas mas se o valor do usuário for nil ele usa USD
-                //format é um formatador de texto, pode ser percentual, moeda...
-                //Configuramos o tipo de teclado do textField para decimal
+        NavigationStack{
+            Form{
+                Section {
+                    TextField("Check Amount:", value: $checkAmount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                        .keyboardType(.decimalPad)
+                    Picker("Number of People", selection: $numberOfPeople){
+                        ForEach(2..<100) {Text ("\($0) people")}
+                    }
+                    .pickerStyle(.navigationLink)
+                    //o navigationLink move o usuário para uma nova tela para selecionar sua opção, mas para funciona precisa exitir uma navigationStack
+                }
             }
+            .navigationTitle("We Split")
+            //O title deve ser aplicado denro do navigationStack e em nivel superior para comunicar que o título é de toda tela, por isso fica ao final do Form e assim permite que o iOS altere os titulos livremente
         }
     }
 }
