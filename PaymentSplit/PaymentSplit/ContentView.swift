@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var tapCount = 0 //@State faz com que a var possa armazenar valor nessa view, o valor só muda se colocarmo o State, pois structs são constantes por padrão
+    @State var name = ""
     var body: some View {
-        Button ("Tap Count: \(tapCount)" ){
-            self.tapCount += 1
+        Form {
+            TextField("Enter your name", text: $name) //um cifrão antes do nome de uma propriedade, cria uma ligação bidirecional: o valor da propriedade é lido, mas também escrito.
+            Text ("Hello \(name)")
         }
     }
 }
