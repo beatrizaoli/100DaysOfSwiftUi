@@ -11,15 +11,21 @@ struct ContentView: View {
     @State private var checkAmount = 0.0
     @State private var numberOfPeople = 2
     @State private var tipPercentage = 20
-    @FocusState private var amountIsFocused: Bool //adicionamos property wrapper FocusState
+    @FocusState private var amountIsFocused: Bool
     
     private let tipPercentages = [5, 10, 15, 20]
 
-    var totalPerPerson:Double {
-        let peopleCount = Double(numberOfPeople+2)
+    var totalAmount: Double {
         let tipSelection = Double(tipPercentage)
         let tipValue = tipSelection * checkAmount / 100
-        let amountPerPerson = (checkAmount + tipValue) / peopleCount
+        let totAmount = (checkAmount + tipValue)
+        return totAmount
+    }
+
+    
+    var totalPerPerson:Double {
+        let peopleCount = Double(numberOfPeople+2)
+        let amountPerPerson = totalAmount / peopleCount
         return amountPerPerson
     }
     
@@ -30,7 +36,7 @@ struct ContentView: View {
                 Section {
                     TextField("Check Amount:", value: $checkAmount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
                         .keyboardType(.decimalPad)
-                        .focused($amountIsFocused) //adicionamos o funcionamento da FocusState que irá armazenar o estado de true ou false quando essa section tem interação com o usuário, ele força o foco durante a interação com o usuário
+                        .focused($amountIsFocused)
                     Picker("Number of People", selection: $numberOfPeople){
                         ForEach(2..<100) {Text ("\($0) people")}
                     }
@@ -41,13 +47,16 @@ struct ContentView: View {
                     }
                     .pickerStyle(.segmented)
                 }
+                Section("Total Amount"){
+                    Text(totalAmount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                }
                 Section ("Payment per person"){
                     Text(totalPerPerson, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
                 }
             }
             .navigationTitle("We Split")
-            .toolbar{ //adiciona coisas a barra de ferramenas
-                if amountIsFocused { //se o amountIsFocused for true cria o botao de "done" que faz o amountIsFocusedSer false
+            .toolbar{
+                if amountIsFocused { 
                     Button("Done"){ amountIsFocused = false}
                 }
             }
