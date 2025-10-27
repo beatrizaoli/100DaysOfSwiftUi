@@ -17,6 +17,18 @@ struct ContentView: View {
             Text ("Form Text")
             Text ("Form Text")
         }
+        Form {
+            Section{
+                Text ("Form Text")
+                Text ("Form Text")
+                Text ("Form Text")
+            }
+            Section{
+                Text ("Form Text")
+                Text ("Form Text")
+                Text ("Form Text")
+            }
+        }
     }
 }
 
