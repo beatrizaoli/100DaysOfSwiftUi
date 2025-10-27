@@ -12,6 +12,8 @@ struct ContentView: View {
     @State private var numberOfPeople = 2
     @State private var tipPercentage = 20
     
+    private let tipPercentages = [5, 10, 15, 20]
+    
     var body: some View {
         NavigationStack{
             Form{
@@ -21,12 +23,17 @@ struct ContentView: View {
                     Picker("Number of People", selection: $numberOfPeople){
                         ForEach(2..<100) {Text ("\($0) people")}
                     }
-                    .pickerStyle(.navigationLink)
-                    //o navigationLink move o usuário para uma nova tela para selecionar sua opção, mas para funciona precisa exitir uma navigationStack
+                }
+                Section ("How dmuch do you want to tip?") {
+                    Picker ("Tip percentage", selection: $tipPercentage){
+                        ForEach(tipPercentages, id: \.self) {Text ($0, format: .percent)}
+                    }
+                    //Fizemos um picker pra gorjeta no qual a lista de opcoes percorre sobre o array.
+                    .pickerStyle(.segmented)
+                    //coloca a lista do picker em bloquinhos
                 }
             }
             .navigationTitle("We Split")
-            //O title deve ser aplicado denro do navigationStack e em nivel superior para comunicar que o título é de toda tela, por isso fica ao final do Form e assim permite que o iOS altere os titulos livremente
         }
     }
 }
