@@ -7,29 +7,34 @@
 
 import SwiftUI
 import Foundation
-//usar format: .number
-//Conversão de volume: os usuários escolhem mililitros, litros, xícaras, pintas ou galões.
-//converter a entrada do usuário em mililitros (o menor denominador comum) e, então, converter daí para qualquer unidade de saída que ele desejar
-//input number, their input unit, and their output unit – you need to have three @State properties to store them all. You’ll need a TextField, two pickers, and a text view to show your output
-//ml = 1000, dm = 100, L=10000
 
 struct ContentView: View {
-    @State private var userVolume = 0.0
-    @State private var initialUnit = "mL"
-    @State private var choosenUnit = "L"
-    private let units = ["mL", "dL", "L", "cups"]
     
-//    var result: Measurement<UnitVolume>{
-//        let mililitersPattern = Measurement(value: userVolume, unit: UnitVolume.milliliters)
-//    }
-//    
-//    var totalAmount: Double {
-//        let tipSelection = Double(tipPercentage)
-//        let tipValue = tipSelection * checkAmount / 100
-//        let totAmount = (checkAmount + tipValue)
-//        return totAmount
-//    }
-//    let volumeMeasurement = Measurement(value: userVolume, unit: UnitVolume.milliliters)
+    @State private var userVolume = 0.0
+    @State private var initialUnit = "milliliters"//ajustei para unidades do measurement
+    @State private var choosenUnit = "liters"
+    private let units = ["milliliters", "liters", "cups", "pints", "gallons"]
+    
+    func stringToUnit (_ unitValue: String) -> UnitVolume { //converti a string escolhida para a unidade do sistema
+        switch unitValue {
+            case "milliliters": return .milliliters
+            case "liters": return .liters
+            case "cups": return .cups
+            case "pint": return .pints
+            case "gallons": return .gallons
+            default : return . milliliters
+        }
+    }
+    
+    var convertedResult: Double {
+        let initialUnitX = stringToUnit(initialUnit)
+        let choosenUnitX = stringToUnit(choosenUnit)
+        
+        let measurementLocker = Measurement(value: userVolume, unit: initialUnitX) //Measurement guarda o valor e a unidade do valor atual
+        let conversionResult = measurementLocker.converted(to: choosenUnitX) //Aqui convertemos o valor e a unidade do valor atual para o valor desejado
+        return conversionResult.value
+    }
+
     
     var body: some View {
         NavigationStack{
@@ -39,8 +44,9 @@ struct ContentView: View {
                         ForEach(units, id:\.self) {Text ($0)}
                     }
                 }
-                Section ("Volume"){
+                Section ("Initial Volume"){
                     TextField("Volume:", value: $userVolume, format: .number)
+                        .keyboardType(.decimalPad)
                 }
                 Section ("Choose a unit"){
                     Picker ("Units", selection: $choosenUnit){
@@ -49,9 +55,7 @@ struct ContentView: View {
                     .pickerStyle(.segmented)
                 }
                 Section ("Result"){
-                    //                    VAR COMPUTADA COM O RESULTADO
-                    //                    Text(totalPerPerson, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
-                    //                }
+                    Text(convertedResult, format: .number)
                 }
                 .navigationTitle("Volume conversion")
                 .navigationBarTitleDisplayMode(.inline)
