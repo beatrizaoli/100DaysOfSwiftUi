@@ -9,13 +9,12 @@ import SwiftUI
 import Foundation
 
 struct ContentView: View {
-    
     @State private var userVolume = 0.0
-    @State private var initialUnit = "milliliters"//ajustei para unidades do measurement
+    @State private var initialUnit = "milliliters"
     @State private var choosenUnit = "liters"
     private let units = ["milliliters", "liters", "cups", "pints", "gallons"]
     
-    func stringToUnit (_ unitValue: String) -> UnitVolume { //converti a string escolhida para a unidade do sistema
+    func stringToUnit (_ unitValue: String) -> UnitVolume {
         switch unitValue {
             case "milliliters": return .milliliters
             case "liters": return .liters
@@ -30,8 +29,8 @@ struct ContentView: View {
         let initialUnitX = stringToUnit(initialUnit)
         let choosenUnitX = stringToUnit(choosenUnit)
         
-        let measurementLocker = Measurement(value: userVolume, unit: initialUnitX) //Measurement guarda o valor e a unidade do valor atual
-        let conversionResult = measurementLocker.converted(to: choosenUnitX) //Aqui convertemos o valor e a unidade do valor atual para o valor desejado
+        let measurementLocker = Measurement(value: userVolume, unit: initialUnitX)
+        let conversionResult = measurementLocker.converted(to: choosenUnitX)
         return conversionResult.value
     }
 
