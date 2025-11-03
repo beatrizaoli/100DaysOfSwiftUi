@@ -6,15 +6,14 @@
 //
 
 import SwiftUI
-
-//GRADIENTE Angular - COM ESPACO DELIMITADO POR PERCENTUAL
-// AngularGradient(stops: [Gradient.Stop], center: UnitPoint)
-// Gradiente radial se move para fora em formato circular, então, em vez de especificar uma direção, especificamos um raio inicial e um raio final. Começou em vermelho e terminou em verde, dividindo o espaço entre eles.
+//.gradient - gradiente automatico usado apenas em background e foreground
 
 struct ContentView: View {
     var body: some View {
-        AngularGradient(colors: [.red, .yellow, .purple, .green], center: .center)
-       
+        Text("Textinho Maroto")
+            .frame(maxWidth: .infinity, maxHeight: .infinity) //coloca a cor na tela toda
+            .foregroundStyle(.white)
+            .background(.red.gradient) //só com o background a cor fica só envolta do nome
     }
 }
 
