@@ -7,16 +7,14 @@
 
 import SwiftUI
 
-//GRADIENTE STOPS - COM ESPACO DELIMITADO POR PERCENTUAL
-//LinearGradient(stops: [Gradiente.Stop], startPoint: UnitPoint, endPoint: UnitPoint)
+//GRADIENTE Angular - COM ESPACO DELIMITADO POR PERCENTUAL
+// AngularGradient(stops: [Gradient.Stop], center: UnitPoint)
+// Gradiente radial se move para fora em formato circular, então, em vez de especificar uma direção, especificamos um raio inicial e um raio final. Começou em vermelho e terminou em verde, dividindo o espaço entre eles.
 
 struct ContentView: View {
     var body: some View {
-              LinearGradient(stops:
-                [.init(color: .white, location: 0.4), //aqui colocamos a cor e o espa;o que irá ocupar
-                .init(color: .black, location: 0.6)],
-                startPoint: .top, endPoint: .bottom
-              )
+        AngularGradient(colors: [.red, .yellow, .purple, .green], center: .center)
+       
     }
 }
 
