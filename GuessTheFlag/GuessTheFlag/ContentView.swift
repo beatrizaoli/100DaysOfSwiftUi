@@ -7,26 +7,110 @@
 
 import SwiftUI
 
-//pop up com um titulo, mensagem e butoes
-//views são funções do estado do nosso aplicativo, então o alert deve ser colocado para aparecendo diante de uma condição
-//criamos um @State para observar o valor que o alerta ta recebendo, meio que monitora o estado do valor, ai se algo aocntece ele consegue ler e trocar o estado do alerta
-//Qualquer botão dentro da area de código do alert irá automaticamente descarta-lo, por isso não precisa de código só par fechar o pop up de alerta, mas precisa de código se quiser adicionar outra funcionalidade
-//
 struct ContentView: View {
-    @State private var alertState = false
-   
+    @State private var countries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Spain", "UK", "Ukraine", "US"].shuffled()
+    @State private var correctAnswer = Int.random(in: 0...2)
+    
+    @State private var scoreTitle = ""
+    @State private var scoreAppears = false
+    @State private var score = 0
+    @State private var gameNumber = 0
+    @State private var gameOver = false
+    
     var body: some View {
-        Button("Alert button"){
-            alertState = true
-        }
-        .alert("Important message", isPresented: $alertState) {
-            Button("Delete", role: .destructive){} //fecha alerta
-            Button("Cancel", role: .cancel){} //fecha alerta mas com papel de voltar pra pagina que estava
-        } message: {
-            Text ("This is a text for the alert, it appears under the title 'Important message' ")
+        ZStack { //Faz a cor do background
+            RadialGradient(stops: [
+                .init(color: Color(red: 0.1, green:0.2, blue:0.45), location: 0.3),
+                .init(color: Color(red: 0.76, green:0.15, blue:0.26), location: 0.3)
+            ], center: .top, startRadius: 200, endRadius: 400)
+            .ignoresSafeArea()
+            
+            VStack{
+                Spacer()
+                
+                Text("Guess the flag")
+                    .font(.largeTitle.bold())
+                    .foregroundStyle(.white)
+                
+                VStack (spacing: 15){
+                    VStack {
+                        Text("Tap the flag:")
+                            .foregroundStyle(.secondary)
+                            .font(.subheadline.weight(.heavy))
+                        Text(countries[correctAnswer])
+                            .font(.largeTitle.weight(.semibold))
+                    }
+                    ForEach(0..<3){number in
+                        Button{
+                            flagTapped(number)
+                        } label:{
+                            Image(countries[number])
+                                .clipShape(.capsule)
+                                .shadow(radius: 5)
+                        }
+                    }
+                }
+                //Cria a caixa translucida
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 20)
+                .background(.regularMaterial)
+                .clipShape(.rect(cornerRadius: 20))
+                
+                Spacer()
+                Spacer()
+                
+                Text("SCORE: \(score) ")
+                    .font(.title.bold())
+                    .foregroundStyle(.white)
+                
+                Spacer()
+                
+            }
+            .padding()
+            
+            .alert(scoreTitle, isPresented: $scoreAppears){
+                Button("Continue Playing", action: askQuestion)
+            } message :{
+                Text("Your score is \(score) ")
+            }
+            
+            .alert("Game Over", isPresented: $gameOver){
+                Button ("Play again", action: reset)
+            } message :{
+                Text ("\(scoreTitle)!! You've played 8 times, and got \(score) points")
+            }
         }
     }
+    
+    func flagTapped(_ number:Int){
+        if number == correctAnswer {
+            scoreTitle = "Correct"
+            score += 1
+        } else {
+            scoreTitle = "Wrong, this is \(countries[number]) flag"
+        }
+        gameNumber += 1
+        if gameNumber == 8 {
+            gameOver = true
+        } else {
+            scoreAppears = true
+        }
+    }
+        
+    func askQuestion(){
+        countries.shuffle()
+        correctAnswer = Int.random(in: 0...2)
+    }
+    
+    func reset(){
+        countries.shuffle()
+        correctAnswer = Int.random(in: 0...2)
+        score = 0
+        gameNumber = 0
+    }
+    
 }
+
 
 #Preview {
     ContentView()
