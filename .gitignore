@@ -16,6 +16,7 @@ xcuserdata/
 
 # Derived Data
 DerivedData/
+.DS_Store
 
 # Swift Package Manager
 .build/
