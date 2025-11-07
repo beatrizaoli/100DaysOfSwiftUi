@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+//Quando adicionar um novo modificador de visualização e quando adicionar uma nova View: os modifiers personalizados podem ter suas próprias propriedades armazenadas, enquanto as extensões não podem.
+
 struct Title: ViewModifier { //cria um modifier personalizado
     func body(content: Content) -> some View {
         content
@@ -23,6 +25,27 @@ extension View { //facilita o uso do modifier personalizado, poderá ser chamado
     }
 }
 
+
+struct Watermark: ViewModifier { //cria um modfier personalizado com uma nova estrutura de visualização
+    var text: String
+    func body(content: Content) -> some View {
+        ZStack(alignment: .bottomTrailing) {
+            content
+            Text(text)
+                .font(.caption)
+                .foregroundStyle(.white)
+                .padding(5)
+                .background(.black)
+        }
+    }
+}
+extension View {
+    func watermarked(with text: String) -> some View {
+        modifier(Watermark(text: text))
+    }
+}
+
+
 struct CapsuleText: View { //cria uma view pesonalizada
     var text: String
     var body: some View {
@@ -37,14 +60,22 @@ struct CapsuleText: View { //cria uma view pesonalizada
 
 struct SwiftUIView: View {
     var body: some View {
-        VStack{
-            CapsuleText(text: "First")
-            CapsuleText (text: "Second")
-            Text("Third")
-            Text("Forth")
-                .modifier(Title())
-            Text("Fifth")
-                .titleStyle()
+        ZStack{
+            Color.green
+                .frame(width: 300, height: 550)
+                .watermarked(with: "Hacking with Swift")
+            VStack{
+                CapsuleText(text: "First")
+                CapsuleText (text: "Second")
+                Text("Third")
+                Text("Forth")
+                    .modifier(Title())
+                Text("Fifth")
+                    .titleStyle()
+                // first e second são iguais
+                // forth e fifth são iguais
+             
+            }
         }
     }
 }
