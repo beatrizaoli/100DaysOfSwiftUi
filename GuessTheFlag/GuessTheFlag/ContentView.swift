@@ -4,7 +4,6 @@
 //
 //  Created by Beatriz Amorim Oliveira on 27/10/25.
 //
-//Crie uma personalização ViewModifier (e extensão correspondente View) que faça com que uma visualização tenha uma fonte grande e amarelo, adequada para títulos em destaque.
 
 import SwiftUI
 
@@ -24,9 +23,6 @@ struct BlueTitle: ViewModifier {
     }
 }
 extension View {
-    //criamos uma extensão que adiciona o modifier que criamos ao protocolo View
-    //qualquer View do meu projeto agora poderá usar esse método (que usa o modificador customizado)
-    //Ao fazer isso, você está essencialmente adicionando um novo recurso a todos os tipos que adotam o protocolo View.
     func blueTitleStyle () -> some View {
         modifier(BlueTitle())
     }
@@ -43,7 +39,7 @@ struct ContentView: View {
     @State private var gameOver = false
     
     var body: some View {
-        ZStack { //Faz a cor do background
+        ZStack { 
             RadialGradient(stops: [
                 .init(color: Color(red: 0.1, green:0.2, blue:0.45), location: 0.3),
                 .init(color: Color(red: 0.76, green:0.15, blue:0.26), location: 0.3)
