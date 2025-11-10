@@ -4,7 +4,7 @@
 //
 //  Created by Beatriz Amorim Oliveira on 27/10/25.
 //
-//substitua a Image usada para as bandeiras por uma nova FlagImage() que renderize a imagem de uma bandeira usando o conjunto específico de modificadores que tínhamos.
+//Crie uma personalização ViewModifier (e extensão correspondente View) que faça com que uma visualização tenha uma fonte grande e amarelo, adequada para títulos em destaque.
 
 import SwiftUI
 
@@ -14,7 +14,22 @@ struct FlagImage: ViewModifier {
             .clipShape(.capsule)
             .shadow(radius: 5)
     }
-    
+}
+
+struct BlueTitle: ViewModifier {
+    func body (content: Content) -> some View {
+        content
+            .font(.largeTitle.bold())
+            .foregroundStyle(.yellow)
+    }
+}
+extension View {
+    //criamos uma extensão que adiciona o modifier que criamos ao protocolo View
+    //qualquer View do meu projeto agora poderá usar esse método (que usa o modificador customizado)
+    //Ao fazer isso, você está essencialmente adicionando um novo recurso a todos os tipos que adotam o protocolo View.
+    func blueTitleStyle () -> some View {
+        modifier(BlueTitle())
+    }
 }
 
 struct ContentView: View {
@@ -39,8 +54,7 @@ struct ContentView: View {
                 Spacer()
                 
                 Text("Guess the flag")
-                    .font(.largeTitle.bold())
-                    .foregroundStyle(.white)
+                    .blueTitleStyle()
                 
                 VStack (spacing: 15){
                     VStack {
