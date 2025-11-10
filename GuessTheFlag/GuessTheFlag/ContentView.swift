@@ -4,8 +4,18 @@
 //
 //  Created by Beatriz Amorim Oliveira on 27/10/25.
 //
+//substitua a Image usada para as bandeiras por uma nova FlagImage() que renderize a imagem de uma bandeira usando o conjunto específico de modificadores que tínhamos.
 
 import SwiftUI
+
+struct FlagImage: ViewModifier {
+    func body (content: Content) -> some View {
+        content
+            .clipShape(.capsule)
+            .shadow(radius: 5)
+    }
+    
+}
 
 struct ContentView: View {
     @State private var countries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Spain", "UK", "Ukraine", "US"].shuffled()
@@ -45,8 +55,7 @@ struct ContentView: View {
                             flagTapped(number)
                         } label:{
                             Image(countries[number])
-                                .clipShape(.capsule)
-                                .shadow(radius: 5)
+                                .modifier(FlagImage())
                         }
                     }
                 }
