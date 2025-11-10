@@ -4,6 +4,7 @@
 //
 //  Created by Beatriz Amorim Oliveira on 27/10/25.
 //
+//Aplicar modificador condicional para alterar a cor do texto do valor total para vermelho se o usuário selecionar uma gorjeta de 0%
 
 import SwiftUI
 
@@ -46,6 +47,7 @@ struct ContentView: View {
                 }
                 Section("Total Amount"){
                     Text(totalAmount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                        .foregroundStyle(tipPercentage == 0 ? .red : .black)
                 }
                 Section ("Payment per person"){
                     Text(totalPerPerson, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
