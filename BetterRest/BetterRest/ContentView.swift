@@ -7,15 +7,13 @@
 
 import SwiftUI
 
+//cria uma tela com o valor (sleepamount) e botoes de + e - que alteram o valor
+
 struct ContentView: View {
+    @State private var sleepamount =  8.0
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
+        Stepper("\(sleepamount)", value:$sleepamount)
     }
 }
 
