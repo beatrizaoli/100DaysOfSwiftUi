@@ -13,14 +13,11 @@ import SwiftUI
 
 
 struct ContentView: View {
-    @State private var sleepamount =  8.0
-    @State private var datinha = Date.now
     
     var body: some View {
         VStack{
-            Stepper("Enter your sleep hours: \(sleepamount.formatted())", value:$sleepamount, in: 6...10, step: 0.5)
-            DatePicker("Please enter a date", selection: $datinha, in: Date.now... ,displayedComponents: .date)
-                .labelsHidden()
+            Text(Date.now, format: .dateTime.hour().minute())
+            Text(Date.now, format: .dateTime.day().month().year())
         }
     }
 }
