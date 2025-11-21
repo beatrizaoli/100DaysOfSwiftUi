@@ -4,6 +4,7 @@
 //
 //  Created by Beatriz Amorim Oliveira on 21/11/25.
 //
+// .listStyle(.grouped) retira o padding natural da list e deixa cada text ficar contíduo e retangular
 
 import SwiftUI
 
@@ -27,6 +28,7 @@ struct ContentView: View {
                 Text("Static row 4")
             }
         }
+        .listStyle(.grouped)
     }
     
 }
