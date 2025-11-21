@@ -4,31 +4,23 @@
 //
 //  Created by Beatriz Amorim Oliveira on 21/11/25.
 //
-// .listStyle(.grouped) retira o padding natural da list e deixa cada text ficar contíduo e retangular
+// itera sobre o array, criando uma linha de list para cada elemento. Precisa usar id: \.self para que os elementos tenham um id unico. Isso funciona muito bem porque o SwiftUI consegue identificar cada linha de forma única com base em seu id.
 
 import SwiftUI
 
 struct ContentView: View {
+    
+    let people = ["eleven", "will", "lucas", "mike", "dustin", "max"]
+    
     var body: some View {
         
-        List {
-            Section("Section 1") {
-                Text("Static row 1")
-                Text("Static row 2")
-            }
-            
-            Section("Section 2") {
-                ForEach(0..<5) {
-                    Text("Dynamic row \($0)")
-                }
-            }
-            
-            Section("Section 3") {
-                Text("Static row 3")
-                Text("Static row 4")
-            }
+        List (0..<5) {
+            Text("Message \($0)")
         }
-        .listStyle(.grouped)
+        
+        List (people, id: \.self){
+            Text("\($0)")
+        }
     }
     
 }
