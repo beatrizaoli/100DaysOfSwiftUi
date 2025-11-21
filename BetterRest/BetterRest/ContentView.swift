@@ -4,12 +4,11 @@
 //
 //  Created by Beatriz Amorim Oliveira on 14/11/25.
 //
-//insira dados por meio de um seletor de datas e dois indicadores de ritmo, que, combinados, nos informarão a que horas ele deseja acordar, quantas horas de sono costuma preferir e quanto café consome.
 import CoreML
 import SwiftUI
 
 struct ContentView: View {
-    @State private var acordar = Date.now
+    @State private var acordar = defaultWakeTime
     @State private var sleepAmount = 8.0
     @State private var coffeeAmount = 1
 
@@ -17,22 +16,36 @@ struct ContentView: View {
     @State private var alertMessage = ""
     @State private var showingAlert = false
     
+    static var defaultWakeTime: Date {
+        var components = DateComponents()
+        components.hour = 7
+        components.minute = 0
+        return Calendar.current.date(from: components) ?? .now
+    }
     
     var body: some View {
         NavigationStack{
-            VStack{
-                Text("When do you want to wakeUp")
-                    .font(.headline)
-                DatePicker("Insira uma hora", selection: $acordar, displayedComponents: .hourAndMinute)
-                    .labelsHidden()
+            Form {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("When do you want to wakeUp")
+                        .font(.headline)
+                    DatePicker("Insira uma hora", selection: $acordar, displayedComponents: .hourAndMinute)
+                        .labelsHidden()
+                }
                 
-                Text("Desired Amount Of Sleep")
-                    .font(.headline)
-                Stepper("\(sleepAmount.formatted()) hours", value: $sleepAmount, in: 4...12, step: 0.25)
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Desired Amount Of Sleep")
+                        .font(.headline)
+                    Stepper("\(sleepAmount.formatted()) hours", value: $sleepAmount, in: 4...12, step: 0.25)
+                }
                 
-                Text("Amount Of Coffee")
-                    .font(.headline)
-                Stepper("\(coffeeAmount.formatted()) cups", value: $coffeeAmount, in: 1...20)
+                
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Amount Of Coffee")
+                        .font(.headline)
+                    Stepper("^[\(coffeeAmount) cup](inflect: true)", value: $coffeeAmount, in: 1...20)
+                    //A sintaxe de plural faz com que a palavra "cup" seja flexionada para corresponder ao que estiver na coffeeAmount, neste caso, significa que ela será convertida automaticamente de "cup" para "cups", conforme apropriado.
+                }
             }
             .navigationTitle("Better Rest")
             .toolbar {
