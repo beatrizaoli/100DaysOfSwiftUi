@@ -4,31 +4,34 @@
 //
 //  Created by Beatriz Amorim Oliveira on 21/11/25.
 //
-// método ".firstIndex(of: element)" significa exatamente: Encontre a primeira posição (índice) onde element aparece.
+//Não serão aceitas respostas com menos de três letras ou que sejam apenas a nossa palavra inicial.
+//Adicione um botão na barra de ferramentas que execute o comando startGame(), para que os usuários possam reiniciar com uma nova palavra sempre que desejarem.
+//Adicione uma visualização de texto em algum lugar para que você possa acompanhar e exibir a pontuação do jogador para uma determinada palavra-raiz. Ganha 3 pontos pra 3 letras, 4 pra 4 letras... e a cada 5 palavras ganha +5 pontos
+//
 
 import SwiftUI
 import Foundation
 
 struct ContentView: View {
     
-    @State private var useWords = [String]() //array vazio inicializado, se tivesse valor já seria inicializado, mas sem valor precisa ser inicializado explicitamente com o uso de parenteses para que seja compilado,
+    @State private var useWords = [String]()
     @State private var newWord = ""
     @State private var rootWord = ""
+    @State private var score = 0
     
     @State private var errorTitle = ""
     @State private var errorMessage = ""
     @State private var showingError = false
     
     
-//- VIEW
     var body: some View {
         NavigationStack{
             List{
                 Section{
                     TextField("Type a word", text: $newWord)
-                        .textInputAutocapitalization(.never) //tira as maiúsculas automáticas
+                        .textInputAutocapitalization(.never)
                 }
-                Section { //cria uma lista com os valores do array
+                Section {
                     ForEach(useWords, id: \.self) { palavra in
                         HStack{
                             Image(systemName: "\(palavra.count).circle")
@@ -38,21 +41,27 @@ struct ContentView: View {
                 }
             }
             .navigationTitle(rootWord)
-            //.onSubmit{addNewWord()} //menos direto, ideal para quando tem parametro, mas ambos funcionam
             .onAppear(perform: startGame)
             .onSubmit(addNewWord)
-            .alert(errorTitle, isPresented: $showingError){
-                
-            } message: { Text(errorMessage)}
+            .alert(errorTitle, isPresented: $showingError){} message: {
+                Text(errorMessage)}
+            .toolbar {
+                Button("StartGame", action: startGame)
+            }
+            HStack{
+                Text("Score: \(score)")
+            }
         }
     }
 
     
     func startGame(){
-        if let fileStartTxt = Bundle.main.url(forResource: "start", withExtension: "txt") { //puxamos o file pra variável, daí se atribuir, é true. Assim, existe if porque precisa conferir se o arquivo existe atribui
-            if let fileContents = try? String(contentsOf: fileStartTxt, encoding: .utf8){ // pegamos o conteúdo do file
-                let allWords = fileContents.components(separatedBy: "\n") //colocamos o conteudo do file em strings separadas
+        if let fileStartTxt = Bundle.main.url(forResource: "start", withExtension: "txt") {
+            if let fileContents = try? String(contentsOf: fileStartTxt, encoding: .utf8){
+                let allWords = fileContents.components(separatedBy: "\n")
                 rootWord = allWords.randomElement() ?? "silworm"
+                useWords = []
+                score = 0
                 return
             }
         }
@@ -61,12 +70,15 @@ struct ContentView: View {
 
     
     func addNewWord (){
-        let answer = newWord.lowercased().trimmingCharacters(in: .whitespacesAndNewlines) //se coloco uma palavra com espaço ele continua aparecendo
+        let answer = newWord.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
         
-        guard answer.count > 0 else {return}
+        guard answer.count >= 3 else {
+            wordError(title: "Word little then 3 char", message: "You need to write more!")
+            return
+        }
         
         guard isOriginal(word: answer) else {
-            wordError(title: "Word used already", message: "Be more original")
+            wordError(title: "Word already exists, dont copy", message: "Be more original")
             return
         }
 
@@ -79,26 +91,28 @@ struct ContentView: View {
             wordError(title: "Word not recognized", message: "You can't just make them up, you know!")
             return
         }
-        
-        withAnimation{ //também pode usar parenteses ou chaves aqui
+        withAnimation{
             useWords.insert(answer, at: 0)
         }
         newWord = ""
+        
+        score += answer.count
+        if useWords.count % 5 == 0  {score += 5}
+    
     }
     
-    //faz uma função e depois coloca ela no guard dentro de outra func ao invés de fazer um if porque ficaria muito aninhado, então você ver que ficaria muito aninhado já em criar métodos separados que podem se conectar depois
-    func isOriginal(word: String) -> Bool { // verifica se a palavra do usuário ta no array, se tiver é false e faz o else do guar isOriginal, se não tiver é true e pode continuar
-        !useWords.contains(word)
+
+    func isOriginal(word: String) -> Bool {
+        !useWords.contains(word) && word != rootWord
     }
     
     func isPossible (word:String) -> Bool {
         var copyRoot = rootWord
         
-        for letter in word { //pra cada letra da palavra inserida
-            if let pos = copyRoot.firstIndex(of: letter){ // verifica se o letter existe em copyroot e se encontrar, ele retorna a posição (o índice) de letter, atribuindo esse índice a constante criada, daí tira o elemento dessa posicao da copyroot e verifica a próxima letra
+        for letter in word {
+            if let pos = copyRoot.firstIndex(of: letter){
                 copyRoot.remove(at: pos)
             } else {
-                
                 return false
             }
         }
@@ -106,22 +120,19 @@ struct ContentView: View {
     }
     
     func isReal(word: String) -> Bool {
-        let checker = UITextChecker() //analisar strings em busca de palavras com erros ortográficos
-        let range = NSRange(location: 0, length: word.utf16.count) //analisa toda a extensão da string
-        let misspelledRange = checker.rangeOfMisspelledWord(in: word, range: range, startingAt: 0, wrap: false, language: "en") //finalmente usa o verificador de texto em si, com os parâmetros criados
+        let checker = UITextChecker()
+        let range = NSRange(location: 0, length: word.utf16.count)
+        let misspelledRange = checker.rangeOfMisspelledWord(in: word, range: range, startingAt: 0, wrap: false, language: "en")
         return misspelledRange.location == NSNotFound
     }
         
-    func wordError(title: String, message: String) { //chamado nos casos de erro previstos
+    func wordError(title: String, message: String) {
         errorTitle = title
         errorMessage = message
         showingError = true
     }
     
 }
-
-    
-
 
 
 #Preview {
