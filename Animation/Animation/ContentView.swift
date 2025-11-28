@@ -19,10 +19,9 @@ struct ContentView: View {
         .background(.red)
         .foregroundStyle(.white)
         .clipShape(.circle)
-        .scaleEffect(amount) //aumennta o tamanho
-       
-        .blur(radius: (amount - 1) * 2) //desfoca conforme o radius diminui
-        .animation(.default, value: amount) //Quando amount muda aplica .default a qualquer modificador que dependa de amount. Muda a forma que ocorre o aumento e o desfoque, ocorre de forma mais suave para que o usuário perceba mudando e não mostre apenas o estado antigo e pulo para o novo, mostra a transição. Aplica default ao value, quando tiver o value mudar aplica default.
+        .scaleEffect(amount)
+        .blur(radius: (amount - 1) * 2)
+        .animation(.spring(duration: 1, bounce: 0.5), value: amount)
     }
     
     func growUp() {
