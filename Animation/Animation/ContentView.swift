@@ -21,9 +21,8 @@ struct ContentView: View {
         .clipShape(.circle)
         .scaleEffect(amount)
         .blur(radius: (amount - 1) * 2)
-        .animation(.easeOut(duration: 3).repeatForever(autoreverses: false), value: amount)
-        //o repeatForever vai fazer a entrada e saída suave do easeInOut ocorrer eternamente. Ao clicar ele fica indo e voltando e se clicar de novo aumento e continua no movimento
-        //autoreverse por padrão é true, quando não queremos que ele volte colocamos false, daí ele não faz e refaz o movimento, faz só uma vez e vou a fazer. O circulo abre, depois abre, não mostra o circulo na forma anterior
+        .animation(.easeInOut(duration: 3).repeatCount(2, autoreverses: false), value: amount)
+        //o easeInOut vai acontecer apenas por 2x e vai estabilizar para o estado padrão da view. Como o autorever ta false ele vai abrir dua vezes e parar no estado grande. Se estivesse true, ele iria abrir e diminuir e pular pra view padrão de forma abrupta.
     }
     
     func growUp() {
