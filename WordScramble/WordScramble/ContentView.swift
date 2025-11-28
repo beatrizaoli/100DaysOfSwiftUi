@@ -4,10 +4,6 @@
 //
 //  Created by Beatriz Amorim Oliveira on 21/11/25.
 //
-//Não serão aceitas respostas com menos de três letras ou que sejam apenas a nossa palavra inicial.
-//Adicione um botão na barra de ferramentas que execute o comando startGame(), para que os usuários possam reiniciar com uma nova palavra sempre que desejarem.
-//Adicione uma visualização de texto em algum lugar para que você possa acompanhar e exibir a pontuação do jogador para uma determinada palavra-raiz. Ganha 3 pontos pra 3 letras, 4 pra 4 letras... e a cada 5 palavras ganha +5 pontos
-//
 
 import SwiftUI
 import Foundation
