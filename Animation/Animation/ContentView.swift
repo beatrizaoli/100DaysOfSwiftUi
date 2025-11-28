@@ -21,8 +21,8 @@ struct ContentView: View {
         .clipShape(.circle)
         .scaleEffect(amount)
         .blur(radius: (amount - 1) * 2)
-        .animation(.easeInOut(duration: 3).delay(1), value: amount)
-        //o delay vai fazer a entrada e saída suave do easeInOut, ocorra depois de 1s após o toque e não imediatamente como padrão
+        .animation(.easeInOut(duration: 3).repeatForever(), value: amount)
+        //o repeatForever vai fazer a entrada e saída suave do easeInOut ocorrer eternamente. Ao clicar ele fica indo e voltando e se clicar de novo aumento e continua no movimento
     }
     
     func growUp() {
