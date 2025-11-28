@@ -19,10 +19,16 @@ struct ContentView: View {
         .background(.red)
         .foregroundStyle(.white)
         .clipShape(.circle)
+        .overlay(
+            Circle()
+                .stroke(.red)
+                .scaleEffect(amount)
+                .opacity(2 - amount)
+                .animation(.easeOut(duration: 3).repeatForever(autoreverses: false), value: amount)
+        )
         .scaleEffect(amount)
         .blur(radius: (amount - 1) * 2)
-        .animation(.easeInOut(duration: 3).repeatCount(2, autoreverses: false), value: amount)
-        //o easeInOut vai acontecer apenas por 2x e vai estabilizar para o estado padrão da view. Como o autorever ta false ele vai abrir dua vezes e parar no estado grande. Se estivesse true, ele iria abrir e diminuir e pular pra view padrão de forma abrupta.
+        .animation(.easeOut(duration: 3), value: amount)
     }
     
     func growUp() {
