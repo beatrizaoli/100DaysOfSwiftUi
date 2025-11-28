@@ -21,7 +21,8 @@ struct ContentView: View {
         .clipShape(.circle)
         .scaleEffect(amount)
         .blur(radius: (amount - 1) * 2)
-        .animation(.spring(duration: 1, bounce: 0.5), value: amount)
+        .animation(.easeInOut(duration: 3), value: amount)
+        //entrada e saída suave, duration é o tempo que a animação vai durar.
     }
     
     func growUp() {
