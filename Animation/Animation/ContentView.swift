@@ -21,8 +21,8 @@ struct ContentView: View {
         .clipShape(.circle)
         .scaleEffect(amount)
         .blur(radius: (amount - 1) * 2)
-        .animation(.easeInOut(duration: 3), value: amount)
-        //entrada e saída suave, duration é o tempo que a animação vai durar.
+        .animation(.easeInOut(duration: 3).delay(1), value: amount)
+        //o delay vai fazer a entrada e saída suave do easeInOut, ocorra depois de 1s após o toque e não imediatamente como padrão
     }
     
     func growUp() {
