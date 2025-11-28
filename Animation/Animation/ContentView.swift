@@ -12,9 +12,7 @@ struct ContentView: View {
     @State private var amount = 1.0
     
     var body: some View {
-        Button ("Tap"){
-            growUp()
-        }
+        Button ("Tap"){}
         .padding(50)
         .background(.red)
         .foregroundStyle(.white)
@@ -24,15 +22,11 @@ struct ContentView: View {
                 .stroke(.red)
                 .scaleEffect(amount)
                 .opacity(2 - amount)
-                .animation(.easeOut(duration: 3).repeatForever(autoreverses: false), value: amount)
+                .animation(.easeOut(duration: 2).repeatForever(autoreverses: false), value: amount)
         )
-        .scaleEffect(amount)
-        .blur(radius: (amount - 1) * 2)
-        .animation(.easeOut(duration: 3), value: amount)
-    }
-    
-    func growUp() {
-        amount += 1
+        .onAppear{
+            amount = 2
+        }
     }
 }
 
