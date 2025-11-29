@@ -4,7 +4,8 @@
 //
 //  Created by Beatriz Amorim Oliveira on 27/11/25.
 //
-
+//Rotation3DEffect precisa do withAnimation para a animação ocorrer porque ele é apenas um modificador de view, ele muda estado mas não aplica animação em si. 
+//O modificador rotation3DEffect por si só não sabe que tipo de animação (duração, curva) você deseja, e ele não tem a capacidade de animar as mudanças de estado, apenas de aplicá-las.
 
 import SwiftUI
 
@@ -14,7 +15,7 @@ struct ContentView: View {
     
     var body: some View {
         Button("Tap Me") {
-            withAnimation (.spring(duration: 3, bounce: 0.7)) {
+            withAnimation () {
                 amount += 180
             }
         }
