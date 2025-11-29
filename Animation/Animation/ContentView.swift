@@ -4,26 +4,26 @@
 //
 //  Created by Beatriz Amorim Oliveira on 27/11/25.
 //
-//Rotation3DEffect precisa do withAnimation para a animação ocorrer porque ele é apenas um modificador de view, ele muda estado mas não aplica animação em si.
-//O modificador rotation3DEffect por si só não sabe que tipo de animação (duração, curva) você deseja, e ele não tem a capacidade de animar as mudanças de estado, apenas de aplicá-las.
+//Se aplicarmos vários modificadores animation(), cada um controla tudo o que vem antes dele até a próxima animação. Isso nos permite animar mudanças de estado de diversas maneiras diferentes, em vez de uniformemente para todas as propriedades
+//Você pode ter quantos animation()modificadores forem necessários para construir seu projeto, o que nos permite dividir uma mudança de estado em quantos segmentos precisarmos.
 
 import SwiftUI
 
 struct ContentView: View {
     
-    @State private var amount = 1.0
+    @State private var enabled = false
     
     var body: some View {
-        VStack{
-            Button("Tap Me") {}
-                .background(.blue)
-                .frame(width: 200, height: 200)
-                .foregroundStyle(.white)
-            Button("Tap Me") {}
-                .frame(width: 200, height: 200)
-                .background(.blue)
-                .foregroundStyle(.white)
+        Button("Tap Me") {
+            enabled.toggle()
         }
+            .frame(width: 200, height: 200)
+            .background(enabled ? .blue : .red)
+            .foregroundStyle(.white)
+            .animation(.default, value: enabled) //anima a troca de cor
+            .clipShape(.rect(cornerRadius: enabled ? 60 : 0))
+            .animation(.spring(duration: 3, bounce: 0.6), value: enabled) //anima a troca de forma e não interfere na troca de cor
+        
     }
 }
 
