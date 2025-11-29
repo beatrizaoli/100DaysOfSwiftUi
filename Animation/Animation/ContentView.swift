@@ -4,24 +4,27 @@
 //
 //  Created by Beatriz Amorim Oliveira on 27/11/25.
 //
+// Um cartão que podemos arrastar pela tela, mas que, ao soltarmos, retorna à sua posição original.
+// offset(), que nos permite ajustar as coordenadas X e Y de uma visualização sem mover outras visualizações ao redor.
 
 import SwiftUI
 
 struct ContentView: View {
     
-    @State private var enabled = false
+    @State private var amount = CGSize.zero //Define o estado inicial do deslocamento como 0 em X e 0 em Y (posição inicial).
     
     var body: some View {
-        Button("Tap Me") {
-            enabled.toggle()
-        }
-            .frame(width: 200, height: 200)
-            .background(enabled ? .blue : .red)
-            .foregroundStyle(.white)
-            .animation(nil, value: enabled) //usa nil para manter animação da forma com bounce, mas não interferir na cor, ela ficará sem mudança suave, e se tirasse esse animation o sprng ia animar a cor e se mover o background para baixo o clipshape não funciona
-            .clipShape(.rect(cornerRadius: enabled ? 60 : 0))
-            .animation(.spring(duration: 3, bounce: 0.6), value: enabled)
-        
+        LinearGradient(colors: [.yellow, .red], startPoint: .topLeading, endPoint: .bottomTrailing)
+            .frame(width: 300, height: 200)
+            .clipShape(.rect(cornerRadius: 10))
+            .offset(amount)
+            .gesture(
+                DragGesture()
+                    .onChanged { amount = $0.translation }
+                    .onEnded { _ in withAnimation(.bouncy)
+                        {amount = .zero }
+                    }
+            )
     }
 }
 
