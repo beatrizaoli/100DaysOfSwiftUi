@@ -4,10 +4,31 @@
 //
 //  Created by Beatriz Amorim Oliveira on 27/11/25.
 //
-//Aonde vai a animacao ela vai aonde ocorre a mudanca de estado pois a mudanca reconstruirá a view e a recostrução virá animada
-//O que sera animado é a construção
+
 
 import SwiftUI
+
+struct CornerRotateModifier: ViewModifier {
+    
+    let amount: Double
+    let anchor: UnitPoint
+    
+    func body (content: Content) -> some View {
+        content
+            .rotationEffect(.degrees(amount), anchor: anchor)
+            .clipped()
+    }
+}
+
+extension AnyTransition {
+    static var pivot: AnyTransition {
+        .modifier(
+            active: CornerRotateModifier(amount: -90, anchor: .topLeading),
+            identity: CornerRotateModifier(amount: 0, anchor: .topLeading)
+        )
+    }
+}
+
 
 struct ContentView: View {
     
@@ -15,19 +36,22 @@ struct ContentView: View {
     
     var body: some View {
         
-        Button("Tap me") {
-            withAnimation{ //anima a mudanca visual que acontece com a mudança de estado, se mudou o estado, reconstruiu a view e vai reconstruir ela coma animaçãi
-                showing.toggle()
+        ZStack {
+            Rectangle()
+                .fill(.blue)
+                .frame(width: 200, height: 200)
+            
+            if showing {
+                Rectangle()
+                    .fill(.red)
+                    .frame(width: 200, height: 200)
+                    .transition(.pivot)
             }
         }
-        
-        
-        if showing {
-            Rectangle()
-                .fill(.red)
-                .frame(width: 200, height: 300)
-                .transition(.asymmetric(insertion: .scale, removal: .opacity))
-            
+        .onTapGesture {
+            withAnimation {
+                showing.toggle()
+            }
         }
     }
 
