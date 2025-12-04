@@ -9,9 +9,9 @@
 import SwiftUI
 
 struct CornerRotateModifier: ViewModifier {
-    
+    //struct em conformidade com o protocolo ViewModifier, permitindo que  altere o comportamento e a aparência de outras views
     let amount: Double
-    let anchor: UnitPoint
+    let anchor: UnitPoint //define o ponto fixo (pivot) em torno do qual a view girará
     
     func body (content: Content) -> some View {
         content
@@ -20,6 +20,9 @@ struct CornerRotateModifier: ViewModifier {
     }
 }
 
+//Anytransition é um struct no SwiftUI que permite criar transições animadas personalizadas para a inserção e remoção de visualizações na interface
+//Entrada: A view começa no estado active (girada -90°) e se anima para o estado identity (girada 0°).
+//Saída: A view começa no estado identity (girada 0°) e se anima para o estado active (girada -90°).
 extension AnyTransition {
     static var pivot: AnyTransition {
         .modifier(
@@ -45,7 +48,7 @@ struct ContentView: View {
                 Rectangle()
                     .fill(.red)
                     .frame(width: 200, height: 200)
-                    .transition(.pivot)
+                    .transition(.pivot) //adiciono a variável que eu criei pra controlar a transição
             }
         }
         .onTapGesture {
@@ -55,6 +58,7 @@ struct ContentView: View {
         }
     }
 
+    
 }
 
 #Preview {
