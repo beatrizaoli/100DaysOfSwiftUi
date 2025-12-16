@@ -1,44 +1,36 @@
-//
-//  ContentView.swift
-//  EduKids
-//
-//  Created by Beatriz Amorim Oliveira on 06/12/25.
-//
-// O jogador precisa selecionar quais tabuadas de multiplicação de 2 a 12 deseja. 
-// O jogador deve poder selecionar quantas perguntas deseja responder: 5, 10 ou 20.
-// Você deve gerar aleatoriamente tantas perguntas quantas forem solicitadas, dentro do nível de dificuldade especificado.
-// Adicione algum estado para determinar se o jogo está ativo ou se você está solicitando configurações.
-// Gere uma série de perguntas com base nas configurações do usuário.
-
-
 import SwiftUI
+
 
 struct EduKidsView: View {
     
     @State private var selectedTable = 2
     @State private var choosenQuestionNumber = 5
     @State private var questionNumbers = [5, 10, 15]
-    @State private var arrayAnswers : [String] = []
-    //    @State private var arrayMulitpliers = [Int]()
-    @State private var arrayMultipliers: [Int] = []
-    @State private var gameIsActive = true
+    
+    @State private var gameIsActive = false
     @State private var score = 0
     
+    @State private var questionArray: [questionData] = []
     
-    //view exigida pelo protocolo View e dentro dela podemos fazer outras
+    @State private var endgame = false
+    
+    
     var body: some View {
         NavigationStack {
-            if gameIsActive {
-                settingsView
-            } else {
-                gameView
+            Group{
+                if gameIsActive {
+                    gameView
+                } else {
+                    settingsView
+                }
             }
+            .navigationTitle(gameIsActive ? "Jogo" : "Configurações")
         }
-        .navigationTitle("Jogo da Multiplicação")
     }
     
+    
     var settingsView: some View {
-        NavigationStack {
+        ZStack {
             Form {
                 Section("Qual tabuada você quer praticar?") {
                     Stepper("Tabuada de \(selectedTable) ", value: $selectedTable, in: 2...12)
@@ -50,58 +42,88 @@ struct EduKidsView: View {
                             Text(text, format: .number)
                         }
                     }
+                    .pickerStyle(.segmented)
                 }
-                .pickerStyle(.segmented)
-                
-                Button("Começar jogo") {
-                    gameIsActive = false
-                    generateMultipliers()
-                }
-                //MELHORAR A APARÊNCIA DESSE BOTÃO
-                
             }
+            
+            Button("Começar"){
+                gameIsActive = true
+                generateQuestions()
+            }
+            .padding(.horizontal, 40)
+            .frame(width: 180, height: 100)
+            .font(.headline)
+            .foregroundColor(.white)
+            .background(.gray)
+            .cornerRadius(10)
         }
-        .navigationTitle("Jogo da Multiplicação")
     }
     
     
     var gameView: some View {
-        Form {
-            Section ("Questões") {
-                ForEach(arrayMultipliers.indices, id: \.self) { num in
-                    HStack{
-                        Text("\(selectedTable) x \(arrayMultipliers[num]) = ")
-                        TextField("Resposta", text: $arrayAnswers[num])
-                                                                                 
-                    }
+        VStack (spacing: 10){
+            List ($questionArray) { $num in
+                HStack{
+                    Text("\(selectedTable) x \(num.multiplier) = ")
+                    TextField("Resposta", text: $num.userAnswer)
                 }
             }
+            .frame(maxHeight: .infinity)
+            
+            Text("Score: \(score)")
+                .font(.title2.bold())
+                .padding(.bottom, 10)
+            
             Button("Recomeçar jogo"){
-                gameIsActive = true
+                resetGame()
             }
+            
+            Button(action: checkAnswers){
+                HStack{
+                    Text("Verificar Respostas")
+                    Image(systemName: "paperplane")
+                }
+            }
+            .alert("Fim de Jogo", isPresented: $endgame){
+                Button ("Jogar Novamente", action: resetGame)
+            } message: {
+                Text("Sua pontuação final: \(score)")
+            }
+            
         }
     }
-
-
-    func generateMultipliers (){
-        //Quando o usuário muda o número de questões criamos o array com os múltiplos pra serem utilizados e aí mostra as questões
-        // PORQUE EU CRIO O ARRAY SÓ QUANDO CLICO O BOTÃO, porque não posso já deixar ele criado embaralhado e quando clicar no botão só cortar ele
         
+
+    func generateQuestions() {
         var possibleMultipliers = Array(1...30)
         possibleMultipliers.shuffle()
         
-        let quantidadeElementos = min(choosenQuestionNumber, possibleMultipliers.count) //pega o menor valor entre esses dois
+        let multipliersCount = min(choosenQuestionNumber, possibleMultipliers.count)
+        let uniqueMultipliers = possibleMultipliers.prefix(multipliersCount)
         
-        arrayMultipliers = Array(possibleMultipliers.prefix(quantidadeElementos))
-        arrayAnswers = Array(repeating: "", count: possibleMultipliers.count)
-    }
-    
-    func checkAnswers(answer: Int, randomMultiplier: Int){ //queria executar esse função a cada iteração de entrada de resposta
-        if  randomMultiplier * selectedTable == answer {
-            score += 1
+        questionArray = uniqueMultipliers.map { multiplier in
+            let product = selectedTable * multiplier
+            return questionData(multiplier: multiplier, correctProduct: product)
         }
     }
     
+    func checkAnswers(){
+        score = 0
+        for i in questionArray.indices {
+            let userAnswerInt = Int(questionArray[i].userAnswer) ?? 0
+            if userAnswerInt == questionArray[i].correctProduct {
+                score += 1
+            }
+        }
+        endgame = true
+    }
+        
+    func resetGame(){
+        score = 0
+        gameIsActive = false
+        questionArray = []
+        endgame = false
+    }
     
         
     
