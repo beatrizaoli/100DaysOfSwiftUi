@@ -13,7 +13,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct EduKidsView: View {
     
     @State private var selectedTable = 2
     @State private var choosenQuestionNumber = 5
@@ -110,5 +110,5 @@ struct ContentView: View {
 
 
 #Preview {
-    ContentView()
+    EduKidsView()
 }
